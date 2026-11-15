@@ -1,0 +1,153 @@
+
+# ---------------------------------------------------------
+# Data Preprocessing on Diabetes Dataset
+# ---------------------------------------------------------
+
+# Import required libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import load_diabetes
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# ---------------------------------------------------------
+# Load Dataset
+# ---------------------------------------------------------
+
+diabetes = load_diabetes()
+
+df = pd.DataFrame(
+    diabetes.data,
+    columns=diabetes.feature_names
+)
+
+df["Target"] = diabetes.target
+
+# Display first 5 rows of dataset
+print("First Five Records")
+print(df.head())
+
+# ---------------------------------------------------------
+# Basic Information
+# ---------------------------------------------------------
+
+# Display dataset information
+print("\nDataset Information")
+df.info()
+
+# Display statistical summary
+print("\nStatistical Summary")
+print(df.describe())
+
+# ---------------------------------------------------------
+# Data Cleaning
+# ---------------------------------------------------------
+
+# Check duplicate records
+print("\nDuplicate Records:", df.duplicated().sum())
+
+# Remove duplicate records if present
+df.drop_duplicates(inplace=True)
+
+# Check missing values
+print("\nMissing Values")
+print(df.isnull().sum())
+
+# ---------------------------------------------------------
+# Feature Scaling
+# ---------------------------------------------------------
+
+scaler = StandardScaler()
+
+# Scale numerical feature columns
+feature_columns = diabetes.feature_names
+
+df[feature_columns] = scaler.fit_transform(
+    df[feature_columns]
+)
+
+# ---------------------------------------------------------
+# Statistical Analysis
+# ---------------------------------------------------------
+
+print("\nMean of Numerical Columns")
+print(df.mean(numeric_only=True))
+
+print("\nMedian of Numerical Columns")
+print(df.median(numeric_only=True))
+
+print("\nStandard Deviation")
+print(df.std(numeric_only=True))
+
+print("\nCorrelation Matrix")
+print(df.corr(numeric_only=True))
+
+# ---------------------------------------------------------
+# Data Visualization
+# ---------------------------------------------------------
+
+# Histogram of Age
+plt.figure(figsize=(5, 4))
+plt.hist(df["age"], bins=20)
+plt.title("Histogram of Age")
+plt.xlabel("Age")
+plt.ylabel("Frequency")
+plt.show()
+
+# Histogram of BMI
+plt.figure(figsize=(5, 4))
+plt.hist(df["bmi"], bins=20)
+plt.title("Histogram of BMI")
+plt.xlabel("BMI")
+plt.ylabel("Frequency")
+plt.show()
+
+# Boxplot of Age
+plt.figure(figsize=(5, 4))
+plt.boxplot(df["age"])
+plt.title("Boxplot of Age")
+plt.ylabel("Age")
+plt.show()
+
+# Boxplot of BMI
+plt.figure(figsize=(5, 4))
+plt.boxplot(df["bmi"])
+plt.title("Boxplot of BMI")
+plt.ylabel("BMI")
+plt.show()
+
+# ---------------------------------------------------------
+# Split Dataset into Features and Target
+# ---------------------------------------------------------
+
+# Features
+X = df.drop("Target", axis=1)
+
+# Target
+y = df["Target"]
+
+# ---------------------------------------------------------
+# Split Dataset
+# ---------------------------------------------------------
+
+# 80% Training and 20% Testing
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=42
+)
+
+# ---------------------------------------------------------
+# Display Dataset Sizes
+# ---------------------------------------------------------
+
+print("\nTraining Feature Shape :", X_train.shape)
+print("Testing Feature Shape  :", X_test.shape)
+
+print("Training Target Shape  :", y_train.shape)
+print("Testing Target Shape   :", y_test.shape)
+
+print("\nData Preprocessing Completed Successfully!")
